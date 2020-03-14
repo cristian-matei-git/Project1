@@ -5,53 +5,48 @@ import java.util.ArrayList;
 public class GuestList {
 	
 	private final int availableSpots;
-	private static ArrayList<Guest> guests;
-	private static ArrayList<Guest> waitlist;
-	private static int guestsNo;
-	private static int waitlistNo;
-	private static int subscribeNo;
+	private ArrayList<Guest> guests;
+	private ArrayList<Guest> waitlist;
+
 	
 	public GuestList(int availableSpots) {
 		
 		this.availableSpots = availableSpots;
-		GuestList.guests = new ArrayList<Guest>(availableSpots);
-		GuestList.waitlist = new ArrayList<Guest>();
-		GuestList.guestsNo = 0;
-		GuestList.subscribeNo = 0;
-		GuestList.waitlistNo = 0;
+		this.guests = new ArrayList<Guest>(availableSpots);
+		this.waitlist = new ArrayList<Guest>();
 		
 	}
 	
 	public int available() {
 		
 		System.out.print("Numarul de locuri ramase: ");
-		return this.availableSpots - GuestList.guestsNo;
+		return this.availableSpots - this.guests.size();
 		
 	}
 
-	public static int guests_no() {
+	public int guests_no() {
 		
 		System.out.print("Numarul de participanti: ");
-		return GuestList.guestsNo;
+		return this.guests.size();
 		
 	}
 
-	public static int waitlist_no() {
+	public int waitlist_no() {
 		
 		System.out.print("Dimensiunea listei de asteptare: ");
-		return GuestList.waitlistNo;
+		return this.waitlist.size();
 		
 	}
 
-	public static int subscribe_no() {
+	public int subscribe_no() {
 		
 		System.out.print("Numarul total de persoane: ");
-		return GuestList.subscribeNo;
+		return this.guests.size()+waitlist.size();
 	}
 
 	public void help() {
 		
-		System.out.print("help - Afiseaza aceasta lista de comenzi"
+		System.out.print("\nhelp - Afiseaza aceasta lista de comenzi"
 				+ "\nadd - Adauga o noua persoana (inscriere)"
 				+ "\ncheck - Verifica daca o persoana este inscrisa la eveniment"
 				+"\nremove - Sterge o persoana existenta din lista"
@@ -63,18 +58,18 @@ public class GuestList {
 				+"\nwaitlist_no - Numarul de persoane din lista de asteptare"
 				+"\nsubscribe_no - Numarul total de persoane inscrise"
 				+"\nsearch - Cauta toti invitatii conform sirului de caractere introdus"
-				+"\nquit - Inchide aplicatia");
+				+"\nquit - Inchide aplicatia\n");
 		
 	}
 	
 	public void guests() {
 		
-		if(GuestList.guestsNo == 0) {
+		if(this.guests.size() == 0) {
 			System.out.println("Niciun participant inscris...");
 		}
 		else {
-			for(int i = 0; i < GuestList.guestsNo; i++) {
-				System.out.println((i+1) + GuestList.guests.get(i).toString());
+			for(int i = 0; i < this.guests.size(); i++) {
+				System.out.println((i+1) + this.guests.get(i).toString());
 			}
 		}
 		
@@ -82,12 +77,12 @@ public class GuestList {
 	
 	public void waitlist() {
 		
-		if(GuestList.waitlistNo == 0) {
+		if(this.waitlist.size() == 0) {
 			System.out.println("Lista de asteptare este goala...");
 		}
 		else {
-			for(int i = 0; i < GuestList.waitlistNo; i++) {
-				System.out.println((i+1) + GuestList.waitlist.get(i).toString());
+			for(int i = 0; i < this.waitlist.size(); i++) {
+				System.out.println((i+1) + this.waitlist.get(i).toString());
 			}
 		}
 		
@@ -101,21 +96,19 @@ public class GuestList {
 			return -1;
 		}
 		
-		if(GuestList.guestsNo < this.availableSpots) {
+		if(this.guests.size() < this.availableSpots) {
 			
-			GuestList.guests.add(new Guest(lastName, firstName, email, phoneNumber));
-			GuestList.subscribeNo++;
-			GuestList.guestsNo++;
+			this.guests.add(new Guest(lastName, firstName, email, phoneNumber));
+
 			System.out.println("[" + lastName + " " + firstName + "] Felicitari! Locul tau la eveniment este confirmat. Te asteptam!");
 			return 0;
 		
 		}else {
 			
-			GuestList.waitlist.add(new Guest(lastName, firstName, email, phoneNumber));
-			GuestList.subscribeNo++;
-			GuestList.waitlistNo++;
-			System.out.println("[" + lastName + " " + firstName + "] Te-ai inscris cu succes in lista de asteptare si ai primit numarul de ordine "+ GuestList.waitlistNo +". Te vom notifica daca un loc devine disponibil.");
-			return GuestList.waitlistNo; 
+			this.waitlist.add(new Guest(lastName, firstName, email, phoneNumber));
+
+			System.out.println("[" + lastName + " " + firstName + "] Te-ai inscris cu succes in lista de asteptare si ai primit numarul de ordine "+ this.waitlist.size() +". Te vom notifica daca un loc devine disponibil.");
+			return this.waitlist.size(); 
 			
 		}
 		
@@ -129,16 +122,16 @@ public class GuestList {
 	
 	public int checkByLastName(String lastName) {
 		
-		for(int i = 0; i < GuestList.guests.size(); i++) {
+		for(int i = 0; i < this.guests.size(); i++) {
 			
-			if(GuestList.guests.get(i).containsLastName(lastName)) {
+			if(this.guests.get(i).containsLastName(lastName)) {
 
 				return i;
 			}
 		}
-		for(int i = 0; i < GuestList.waitlist.size(); i++) {
+		for(int i = 0; i < this.waitlist.size(); i++) {
 			
-			if(GuestList.waitlist.get(i).containsLastName(lastName)){
+			if(this.waitlist.get(i).containsLastName(lastName)){
 
 				return i + this.availableSpots;
 				
@@ -149,16 +142,16 @@ public class GuestList {
 	
 	public int checkByFirstName(String firstName) {
 		
-		for(int i = 0; i < GuestList.guests.size(); i++) {
+		for(int i = 0; i < this.guests.size(); i++) {
 			
-			if(GuestList.guests.get(i).containsFirstName(firstName)) {
+			if(this.guests.get(i).containsFirstName(firstName)) {
 
 				return i;
 			}
 		}
-		for(int i = 0; i < GuestList.waitlist.size(); i++) {
+		for(int i = 0; i < this.waitlist.size(); i++) {
 			
-			if(GuestList.waitlist.get(i).containsFirstName(firstName)){
+			if(this.waitlist.get(i).containsFirstName(firstName)){
 
 				return i + this.availableSpots;
 				
@@ -169,17 +162,17 @@ public class GuestList {
 	
 	public int checkByEmail(String email) {
 		
-		for(int i = 0; i < GuestList.guests.size(); i++) {
+		for(int i = 0; i < this.guests.size(); i++) {
 			
-			if(GuestList.guests.get(i).containsEmail(email)) {
+			if(this.guests.get(i).containsEmail(email)) {
 			
 				return i;
 			}
 		}
 		
-		for(int i = 0; i < GuestList.waitlist.size(); i++) {
+		for(int i = 0; i < this.waitlist.size(); i++) {
 			
-			if(GuestList.waitlist.get(i).containsEmail(email)){
+			if(this.waitlist.get(i).containsEmail(email)){
 
 				return i + this.availableSpots;
 				
@@ -191,16 +184,16 @@ public class GuestList {
 	
 	public int checkByPhone(String phoneNumber) {
 		
-		for(int i = 0; i < GuestList.guests.size(); i++) {
+		for(int i = 0; i < this.guests.size(); i++) {
 		
-			if(GuestList.guests.get(i).containsPhone(phoneNumber)) {
+			if(this.guests.get(i).containsPhone(phoneNumber)) {
 			
 				return i;
 			}
 		}
-		for(int i = 0; i < GuestList.waitlist.size(); i++) {
+		for(int i = 0; i < this.waitlist.size(); i++) {
 			
-			if(GuestList.waitlist.get(i).containsPhone(phoneNumber)){
+			if(this.waitlist.get(i).containsPhone(phoneNumber)){
 
 				return i + this.availableSpots;
 				
@@ -213,22 +206,21 @@ public class GuestList {
 	public boolean removeByName(String lastName, String firstName) {
 		
 		if(checkByName(lastName, firstName) >= 0 && checkByName(lastName, firstName) < this.availableSpots) {
-			GuestList.guests.remove(checkByName(lastName, firstName));
-			GuestList.subscribeNo--;
-			GuestList.guestsNo--;
+			this.guests.remove(checkByName(lastName, firstName));
+
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
-			if(GuestList.guestsNo < this.availableSpots && GuestList.waitlistNo > 0) {
-				GuestList.guests.add(GuestList.waitlist.get(0));
-				GuestList.guestsNo++;
-				GuestList.waitlist.remove(0);
-				GuestList.waitlistNo--;
+			if(this.guests.size() < this.availableSpots && this.waitlist.size() > 0) {
+				this.guests.add(this.waitlist.get(0));
+
+				this.waitlist.remove(0);
+
 			}
 			return true;
 		}
 		else if(checkByName(lastName, firstName) >= this.availableSpots) {
-			GuestList.waitlist.remove(checkByName(lastName, firstName) - this.availableSpots);
-			GuestList.subscribeNo--;
-			GuestList.waitlistNo--;
+			this.waitlist.remove(checkByName(lastName, firstName) - this.availableSpots);
+
+	
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
 			return true;
 		}
@@ -240,22 +232,20 @@ public class GuestList {
 	public boolean removeByEmail(String email) {
 			
 		if(checkByEmail(email) >= 0 && checkByEmail(email) < this.availableSpots) {
-			GuestList.guests.remove(checkByEmail(email));
-			GuestList.subscribeNo--;
-			GuestList.guestsNo--;
+			this.guests.remove(checkByEmail(email));
+
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
-			if(GuestList.guestsNo < this.availableSpots && GuestList.waitlistNo > 0) {
-				GuestList.guests.add(GuestList.waitlist.get(0));
-				GuestList.guestsNo++;
-				GuestList.waitlist.remove(0);
-				GuestList.waitlistNo--;
+			if(this.guests.size() < this.availableSpots && this.waitlist.size() > 0) {
+				this.guests.add(this.waitlist.get(0));
+	
+				this.waitlist.remove(0);
+	
 			}
 			return true;
 		}
 		else if(checkByEmail(email) > this.availableSpots) {
-			GuestList.waitlist.remove(checkByEmail(email) - this.availableSpots);
-			GuestList.subscribeNo--;
-			GuestList.waitlistNo--;
+			this.waitlist.remove(checkByEmail(email) - this.availableSpots);
+
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
 			return true;
 		}
@@ -267,22 +257,19 @@ public class GuestList {
 	public boolean removeByPhone(String phoneNumber) {
 	
 		if(checkByPhone(phoneNumber) >= 0 && checkByPhone(phoneNumber) < this.availableSpots) {
-			GuestList.guests.remove(checkByPhone(phoneNumber));
-			GuestList.subscribeNo--;
-			GuestList.guestsNo--;
+			this.guests.remove(checkByPhone(phoneNumber));
+			
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
-			if(GuestList.guestsNo < this.availableSpots && GuestList.waitlistNo > 0) {
-				GuestList.guests.add(GuestList.waitlist.get(0));
-				GuestList.guestsNo++;
-				GuestList.waitlist.remove(0);
-				GuestList.waitlistNo--;
+			if(this.guests.size() < this.availableSpots && this.waitlist.size() > 0) {
+				this.guests.add(this.waitlist.get(0));
+				this.waitlist.remove(0);
+				
 			}
 			return true;
 		}
 		else if(checkByPhone(phoneNumber) > this.availableSpots) {
-			GuestList.waitlist.remove(checkByPhone(phoneNumber) - this.availableSpots);
-			GuestList.subscribeNo--;
-			GuestList.waitlistNo--;
+			this.waitlist.remove(checkByPhone(phoneNumber) - this.availableSpots);
+			
 			System.out.println("Stergerea persoanei s-a realizat cu succes.");
 			return true;
 		}
@@ -375,11 +362,11 @@ public class GuestList {
 		
 		
 		if(index >= 0 && index < this.availableSpots) {
-			GuestList.guests.get(index).setLastName(replace);;
+			this.guests.get(index).setLastName(replace);;
 			return true;
 		}
 		else if(index >= this.availableSpots) {
-			GuestList.waitlist.get(index - this.availableSpots).setLastName(replace);;
+			this.waitlist.get(index - this.availableSpots).setLastName(replace);;
 			return true;
 		}
 		
@@ -391,11 +378,11 @@ public class GuestList {
 		
 		
 		if(index >= 0 && index < this.availableSpots) {
-			GuestList.guests.get(index).setFirstName(replace);;
+			this.guests.get(index).setFirstName(replace);;
 			return true;
 		}
 		else if(index >= this.availableSpots) {
-			GuestList.waitlist.get(index - this.availableSpots).setFirstName(replace);;
+			this.waitlist.get(index - this.availableSpots).setFirstName(replace);;
 			return true;
 		}
 		
@@ -407,11 +394,11 @@ public class GuestList {
 		
 		
 		if(index >= 0 && index < this.availableSpots) {
-			GuestList.guests.get(index).setEmail(replace);;
+			this.guests.get(index).setEmail(replace);;
 			return true;
 		}
 		else if(index >= this.availableSpots) {
-			GuestList.waitlist.get(index - this.availableSpots).setEmail(replace);;
+			this.waitlist.get(index - this.availableSpots).setEmail(replace);;
 			return true;
 		}
 		
@@ -422,11 +409,11 @@ public class GuestList {
 		
 		
 		if(index >= 0 && index < this.availableSpots) {
-			GuestList.guests.get(index).setPhoneNumber(replace);;
+			this.guests.get(index).setPhoneNumber(replace);;
 			return true;
 		}
 		else if(index >= this.availableSpots) {
-			GuestList.waitlist.get(index - this.availableSpots).setPhoneNumber(replace);;
+			this.waitlist.get(index - this.availableSpots).setPhoneNumber(replace);;
 			return true;
 		}
 		
