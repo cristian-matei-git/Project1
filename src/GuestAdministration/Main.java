@@ -201,7 +201,6 @@ public class Main {
         } while (numberOfAvailableSpots < 1);
 		
 		
-		
 		list1 = new GuestList(numberOfAvailableSpots);
 		
 		String command = "";
